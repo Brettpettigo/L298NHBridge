@@ -4,6 +4,7 @@ import RPi.GPIO as GPIO
 
 ### SETUP ###
 GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
 # Wrapper for the L298N Dual H-Bridge
 # motor A in assumed to be connected to (ENB, IN3, IN4)
@@ -47,7 +48,7 @@ class L298NHBridge:
         GPIO.output(self.IN3, GPIO.LOW)
         GPIO.output(self.IN4, GPIO.LOW)
 
-    def setup(self);
+    def setup(self):
         # initialize pins as outputs
         GPIO.setup(self.ENA, GPIO.OUT)
         GPIO.setup(self.IN1, GPIO.OUT)
@@ -82,9 +83,9 @@ class L298NHBridge:
 
         # set left motor speed
         if speed != 0.0:
-            pwm_a.ChangeDutyCycle((abs(speed) * (1.0 - self.min_speed) + self.min_speed) * 100.0)
+            self.pwm_a.ChangeDutyCycle((abs(speed) * (1.0 - self.min_speed) + self.min_speed) * 100.0)
         else:
-            pwm_a.ChangeDutyCycle(0)
+            self.pwm_a.ChangeDutyCycle(0)
 
     def setMotorB(self, speed):
         if speed < -1.0 or speed > 1.0:
@@ -102,9 +103,11 @@ class L298NHBridge:
 
         # set left motor speed
         if speed != 0.0:
-            pwm_b.ChangeDutyCycle((abs(speed) * (1.0 - self.min_speed) + self.min_speed) * 100.0)
+            s = (abs(speed) * (1.0 - self.min_speed) + self.min_speed) * 100.0
+            print(s)
+            self.pwm_b.ChangeDutyCycle((abs(speed) * (1.0 - self.min_speed) + self.min_speed) * 100.0)
         else:
-            pwm_b.ChangeDutyCycle(0)
+            self.pwm_b.ChangeDutyCycle(0)
 
     def setMotors(self, motor_a_speed, motor_b_speed):
         self.setMotorA(motor_a_speed)
