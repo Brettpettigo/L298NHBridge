@@ -47,30 +47,9 @@ L298NHBridge::setup() const {
   softPwmCreate(ENB, 0, 100);
 }
 
-void L298NHBridge::setLeftMotor(double speed) const {
+void L298NHBridge::setMotorA(double speed) const {
   if (!in_range<-1.0, 1.0>(speed))
-    throw std::range_error("speed value out of range for left motor");
-
-  if (speed > 0.0) {
-    digitalWrite(IN3, HIGH);
-    digitalWrite(IN4, LOW);
-  } else if (speed < 0.0) {
-    digitalWrite(IN3, LOW);
-    digitalWrite(IN4, HIGH);
-  } else {
-    digitalWrite(IN3, LOW);
-    digitalWrite(IN4, LOW);
-  }
-
-  if (speed != 0.0)
-    softPwmWrite(ENB, (int) (ABS(speed) * (1.0 - min_speed) + min_speed) * 100);
-  else
-    softPwmWrite(ENB, 0);
-}
-
-void L298NHBridge::setRightMotor(double speed) const {
-  if (!in_range<-1.0, 1.0>(speed))
-    throw std::range_error("speed value out of range for right motor");
+    throw std::range_error("speed value out of range for motor A");
 
   if (speed > 0.0) {
     digitalWrite(IN1, HIGH);
@@ -89,9 +68,30 @@ void L298NHBridge::setRightMotor(double speed) const {
     softPwmWrite(ENA, 0);
 }
 
-void L298NHBridge::setMotors(double left_motor_speed, double right_motor_speed) const {
-  setLeftMotor(left_motor_speed);
-  setRightMotor(right_motor_speed);
+void L298NHBridge::setMotorB(double speed) const {
+  if (!in_range<-1.0, 1.0>(speed))
+    throw std::range_error("speed value out of range for motor B");
+
+  if (speed > 0.0) {
+    digitalWrite(IN3, HIGH);
+    digitalWrite(IN4, LOW);
+  } else if (speed < 0.0) {
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, HIGH);
+  } else {
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, LOW);
+  }
+
+  if (speed != 0.0)
+    softPwmWrite(ENB, (int) (ABS(speed) * (1.0 - min_speed) + min_speed) * 100);
+  else
+    softPwmWrite(ENB, 0);
+}
+
+void L298NHBridge::setMotors(double motor_a_speed, double motor_b_speed) const {
+  setMotorA(motor_a_speed);
+  setMotorB(motor_b_speed);
 }
 
 void L298NHBridge::stopMotors() const {

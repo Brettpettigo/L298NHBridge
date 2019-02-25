@@ -2,8 +2,8 @@
 #define __L298NHBridge_HPP
 
 // Wrapper for the L298N Dual H-Bridge
-// left motor in assumed to be connected to (ENB, IN3, IN4)
-// right motor is assumed to be connected to (ENA, IN1, IN2)
+// motor A in assumed to be connected to (ENB, IN3, IN4)
+// motor B is assumed to be connected to (ENA, IN1, IN2)
 class L298NHBridge {
 public:
 
@@ -15,13 +15,13 @@ public:
 
   void setup() const;
 
-  // set left motor speed [-1.0..1.0]
-  void setLeftMotor(double speed) const;
+  // set speed of motor A from range [-1.0..1.0]
+  void setMotorA(double speed) const;
 
-  // set right moto speed [-1.0..1.0]
-  void setRightMotor(double speed) const;
+  // set speed of motor B from range [-1.0..1.0]
+  void setMotorB(double speed) const;
 
-  void setMotors(double left_motor_speed, double right_motor_speed) const;
+  void setMotors(double motor_a_speed, double motor_b_speed) const;
 
   void stopMotors() const;
 

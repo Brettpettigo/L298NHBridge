@@ -5,6 +5,9 @@ import RPi.GPIO as GPIO
 ### SETUP ###
 GPIO.setmode(GPIO.BCM)
 
+# Wrapper for the L298N Dual H-Bridge
+# motor A in assumed to be connected to (ENB, IN3, IN4)
+# motor B is assumed to be connected to (ENA, IN1, IN2)
 class L298NHBridge:
     """Wrapper class for the L298N Dual H-Bridge"""
 
@@ -17,8 +20,8 @@ class L298NHBridge:
         self.ENB = 0
         self.freq = 0
         self.min_speed = 0
-        self.pwm_left = None
-        self.pwm_right = None
+        self.pwm_a = None
+        self.pwm_b = None
 
     def __init__(self, ENA, IN1, IN2, IN3, IN4, ENB, freq=1000, min_speed=0.3):
         self.ENA = ENA
@@ -32,13 +35,13 @@ class L298NHBridge:
             raise ValueError("min_speed out of range")
         else:
             self.min_speed = min_speed
-        self.pwm_left = None
-        self.pwm_right = None
+        self.pwm_a = None
+        self.pwm_b = None
         self.setup()
 
     def __del__(self):
-        self.pwm_left.stop()
-        self.pwm_right.stop()
+        self.pwm_a.stop()
+        self.pwm_b.stop()
         GPIO.output(self.IN1, GPIO.LOW)
         GPIO.output(self.IN2, GPIO.LOW)
         GPIO.output(self.IN3, GPIO.LOW)
@@ -54,38 +57,18 @@ class L298NHBridge:
         GPIO.setup(self.ENB, GPIO.OUT)
 
         # initialize pwm signals
-        self.pwm_left = GPIO.PWM(self.ENA, self.freq)
-        self.pwm_right = GPIO.PWM(self.ENB, self.freq)
+        self.pwm_a = GPIO.PWM(self.ENA, self.freq)
+        self.pwm_b = GPIO.PWM(self.ENB, self.freq)
 
-        self.pwm_left.start(0)
-        self.pwm_left.ChangeDutyCycle(0)
+        self.pwm_a.start(0)
+        self.pwm_a.ChangeDutyCycle(0)
 
-        self.pwm_right.start(0)
-        self.pwm_right.ChangeDutyCycle(0)
+        self.pwm_b.start(0)
+        self.pwm_b.ChangeDutyCycle(0)
 
-    def setLeftMotor(self, speed):
+    def setMotorA(self, speed):
         if speed < -1.0 or speed > 1.0:
-            raise ValueError("speed value out of range for left motor")
-
-        if speed > 0.0:
-            GPIO.output(self.IN3, GPIO.HIGH)
-            GPIO.output(self.IN4, GPIO.LOW)
-        elif speed < 0.0:
-            GPIO.output(self.IN3, GPIO.LOW)
-            GPIO.output(self.IN4, GPIO.HIGH)
-        else:
-            GPIO.output(self.IN3, GPIO.LOW)
-            GPIO.output(self.IN4, GPIO.LOW)
-
-        # set left motor speed
-        if speed != 0.0:
-            pwm_left.ChangeDutyCycle((abs(speed) * (1.0 - self.min_speed) + self.min_speed) * 100.0)
-        else:
-            pwm_left.ChangeDutyCycle(0)
-
-    def setRightMotor(self, speed):
-        if speed < -1.0 or speed > 1.0:
-            raise ValueError("speed value out of range for right motor")
+            raise ValueError("speed value out of range for motor A")
 
         if speed > 0.0:
             GPIO.output(self.IN1, GPIO.HIGH)
@@ -99,13 +82,33 @@ class L298NHBridge:
 
         # set left motor speed
         if speed != 0.0:
-            pwm_right.ChangeDutyCycle((abs(speed) * (1.0 - self.min_speed) + self.min_speed) * 100.0)
+            pwm_a.ChangeDutyCycle((abs(speed) * (1.0 - self.min_speed) + self.min_speed) * 100.0)
         else:
-            pwm_right.ChangeDutyCycle(0)
+            pwm_a.ChangeDutyCycle(0)
 
-    def setMotors(self, left_motor_speed, right_motor_speed):
-        self.setLeftMotor(left_motor_speed)
-        self.setRightMotor(right_motor_speed)
+    def setMotorB(self, speed):
+        if speed < -1.0 or speed > 1.0:
+            raise ValueError("speed value out of range for motor B")
+
+        if speed > 0.0:
+            GPIO.output(self.IN3, GPIO.HIGH)
+            GPIO.output(self.IN4, GPIO.LOW)
+        elif speed < 0.0:
+            GPIO.output(self.IN3, GPIO.LOW)
+            GPIO.output(self.IN4, GPIO.HIGH)
+        else:
+            GPIO.output(self.IN3, GPIO.LOW)
+            GPIO.output(self.IN4, GPIO.LOW)
+
+        # set left motor speed
+        if speed != 0.0:
+            pwm_b.ChangeDutyCycle((abs(speed) * (1.0 - self.min_speed) + self.min_speed) * 100.0)
+        else:
+            pwm_b.ChangeDutyCycle(0)
+
+    def setMotors(self, motor_a_speed, motor_b_speed):
+        self.setMotorA(motor_a_speed)
+        self.setMotorB(motor_b_speed)
 
     def stopMotors(self):
         self.setMotors(0.0, 0.0)
