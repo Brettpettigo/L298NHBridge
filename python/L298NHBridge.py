@@ -81,7 +81,7 @@ class L298NHBridge:
             GPIO.output(self.IN1, GPIO.LOW)
             GPIO.output(self.IN2, GPIO.LOW)
 
-        # set left motor speed
+        # set motor speed
         if speed != 0.0:
             self.pwm_a.ChangeDutyCycle((abs(speed) * (1.0 - self.min_speed) + self.min_speed) * 100.0)
         else:
@@ -101,10 +101,8 @@ class L298NHBridge:
             GPIO.output(self.IN3, GPIO.LOW)
             GPIO.output(self.IN4, GPIO.LOW)
 
-        # set left motor speed
+        # set motor speed
         if speed != 0.0:
-            s = (abs(speed) * (1.0 - self.min_speed) + self.min_speed) * 100.0
-            print(s)
             self.pwm_b.ChangeDutyCycle((abs(speed) * (1.0 - self.min_speed) + self.min_speed) * 100.0)
         else:
             self.pwm_b.ChangeDutyCycle(0)

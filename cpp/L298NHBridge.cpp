@@ -5,11 +5,6 @@
 
 #define ABS(x)    ((x) < 0 ? -(x) : (x))
 
-template <double low, double high>
-static inline bool in_range(const double &val) {
-  return val >= low && val <= high;
-}
-
 L298NHBridge::L298NHBridge(int ENA, int IN1, int IN2, int IN3, int IN4, int ENB, double min_speed) {
   this->ENA = ENA;
   this->IN1 = IN1;
@@ -17,7 +12,7 @@ L298NHBridge::L298NHBridge(int ENA, int IN1, int IN2, int IN3, int IN4, int ENB,
   this->IN3 = IN3;
   this->IN4 = IN4;
   this->ENB = ENB;
-  if (!in_range<0.0, 1.0>(min_speed))
+  if (min_speed < 0.0 || min_speed > 1.0)
     throw std::range_error("min_speed out of scope");
   else
     this->min_speed = min_speed;
@@ -25,6 +20,10 @@ L298NHBridge::L298NHBridge(int ENA, int IN1, int IN2, int IN3, int IN4, int ENB,
 }
 
 L298NHBridge::~L298NHBridge() {
+  cleanup();
+}
+
+void L298NHBridge::cleanup() const {
   digitalWrite(ENA, LOW);
   digitalWrite(IN1, LOW);
   digitalWrite(IN2, LOW);
@@ -35,8 +34,8 @@ L298NHBridge::~L298NHBridge() {
   softPwmWrite(ENB, 0);
 }
 
-L298NHBridge::setup() const {
-  wiringPiSetup();
+void L298NHBridge::setup() const {
+  wiringPiSetupGpio();
   pinMode(ENA, OUTPUT);
   pinMode(IN1, OUTPUT);
   pinMode(IN2, OUTPUT);
@@ -48,7 +47,7 @@ L298NHBridge::setup() const {
 }
 
 void L298NHBridge::setMotorA(double speed) const {
-  if (!in_range<-1.0, 1.0>(speed))
+  if (speed < -1.0 || speed > 1.0)
     throw std::range_error("speed value out of range for motor A");
 
   if (speed > 0.0) {
@@ -69,7 +68,7 @@ void L298NHBridge::setMotorA(double speed) const {
 }
 
 void L298NHBridge::setMotorB(double speed) const {
-  if (!in_range<-1.0, 1.0>(speed))
+  if (speed < -1.0 || speed > 1.0)
     throw std::range_error("speed value out of range for motor B");
 
   if (speed > 0.0) {

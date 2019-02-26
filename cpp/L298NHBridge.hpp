@@ -15,6 +15,8 @@ public:
 
   void setup() const;
 
+  void cleanup() const;
+
   // set speed of motor A from range [-1.0..1.0]
   void setMotorA(double speed) const;
 
