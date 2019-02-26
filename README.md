@@ -11,3 +11,8 @@ make && sudo make clean
 cd python  
 ./test.py  
 (type Ctrl + C to end program)  
+
+# Test Configuration  
+Connect Motor A to ENA=2, IN1=3, IN2=4  
+Connect Motor B to ENB=21, IN3=16, IN4=26  
+Change configuration in test.cpp or test.py  
