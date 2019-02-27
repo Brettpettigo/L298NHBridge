@@ -1,5 +1,5 @@
 # L298NHBridge  
-C++ / Python Wrapper for an L298N Dual H-Bridge  
+C++ / Python Driver for an L298N Dual H-Bridge  
 
 # C++ Usage  
 cd cpp  
@@ -16,3 +16,6 @@ cd python
 Connect Motor A to ENA=2, IN1=3, IN2=4  
 Connect Motor B to ENB=21, IN3=16, IN4=26  
 Change configuration in test.cpp or test.py  
+  
+test or test.py let motors turn forward/backward for 2 seconds each  
+until user ends program with Crtl + C.
