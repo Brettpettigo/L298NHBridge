@@ -24,6 +24,6 @@ while True:
         print("turning backward")
 
     speed *= -1.0
-    bridge.setMotorB(speed)
+    bridge.setMotors(speed, speed)
     sleep(2)
 
