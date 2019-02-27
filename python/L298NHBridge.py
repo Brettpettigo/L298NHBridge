@@ -6,11 +6,11 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-# Wrapper for the L298N Dual H-Bridge
-# motor A in assumed to be connected to (ENB, IN3, IN4)
-# motor B is assumed to be connected to (ENA, IN1, IN2)
+# Driver for the L298N Dual H-Bridge
+# motor A in assumed to be connected to (ENA, IN1, IN2)
+# motor B is assumed to be connected to (ENB, IN3, IN4)
 class L298NHBridge:
-    """Wrapper class for the L298N Dual H-Bridge"""
+    """Driver class for L298N Dual H-Bridge"""
 
     def __init__(self):
         self.ENA = 0
@@ -24,7 +24,7 @@ class L298NHBridge:
         self.pwm_a = None
         self.pwm_b = None
 
-    def __init__(self, ENA, IN1, IN2, IN3, IN4, ENB, freq=1000, min_speed=0.3):
+    def __init__(self, ENA, IN1, IN2, IN3, IN4, ENB, min_speed=0.3, freq=1000):
         self.ENA = ENA
         self.IN1 = IN1
         self.IN2 = IN2
@@ -41,12 +41,7 @@ class L298NHBridge:
         self.setup()
 
     def __del__(self):
-        self.pwm_a.stop()
-        self.pwm_b.stop()
-        GPIO.output(self.IN1, GPIO.LOW)
-        GPIO.output(self.IN2, GPIO.LOW)
-        GPIO.output(self.IN3, GPIO.LOW)
-        GPIO.output(self.IN4, GPIO.LOW)
+        cleanup()
 
     def setup(self):
         # initialize pins as outputs
@@ -66,6 +61,14 @@ class L298NHBridge:
 
         self.pwm_b.start(0)
         self.pwm_b.ChangeDutyCycle(0)
+        
+    def cleanup():
+        self.pwm_a.stop()
+        self.pwm_b.stop()
+        GPIO.output(self.IN1, GPIO.LOW)
+        GPIO.output(self.IN2, GPIO.LOW)
+        GPIO.output(self.IN3, GPIO.LOW)
+        GPIO.output(self.IN4, GPIO.LOW)
 
     def setMotorA(self, speed):
         if speed < -1.0 or speed > 1.0:
