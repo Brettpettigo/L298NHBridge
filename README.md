@@ -3,7 +3,7 @@ C++ / Python Driver for L298N Dual H-Bridge
 
 # C++ Usage  
 cd cpp  
-make && sudo make clean  
+make && make clean  
 ./test  
 (type Ctrl + C to end program)  
   
