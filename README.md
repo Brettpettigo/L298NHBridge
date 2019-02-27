@@ -18,4 +18,4 @@ Connect Motor B to ENB=21, IN3=16, IN4=26
 Change configuration in test.cpp or test.py  
   
 test or test.py let motors turn forward/backward for 2 seconds each  
-until user ends program with Crtl + C.
+until user ends program with Ctrl + C.
