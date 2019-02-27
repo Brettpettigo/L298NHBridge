@@ -1,5 +1,5 @@
 # L298NHBridge  
-C++ / Python Driver for an L298N Dual H-Bridge  
+C++ / Python Driver for L298N Dual H-Bridge  
 
 # C++ Usage  
 cd cpp  
